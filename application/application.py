@@ -36,13 +36,13 @@ class Application(commands.Cog):
     @commands.guild_only()
     @checks.bot_has_permissions(manage_roles=True)
     async def apply(self, ctx: commands.Context):
-        """Apply to be a staff member."""
+        """Apply to be a Gym Leader"""
         try:
             role_add = get(ctx.guild.roles, id = await self.config.guild(ctx.guild).applicant_id())
         except TypeError:
             role_add = None
         if not role_add:
-            role_add = get(ctx.guild.roles, name = "Staff Applicant")
+            role_add = get(ctx.guild.roles, name = "Gym Leader Applicant")
             if not role_add:
                 return await ctx.send("Uh oh, the configuration is not correct. Ask the Admins to set it.")
         try:
@@ -84,12 +84,12 @@ class Application(commands.Cog):
             position = await self.bot.wait_for("message", timeout=120, check=check)
         except asyncio.TimeoutError:
             return await ctx.send("You took too long. Try again, please.")
-        await ctx.author.send("What is your name?")
+        await ctx.author.send("Which Gym are you Applying for?")
         try:
             name = await self.bot.wait_for("message", timeout=120, check=check)
         except asyncio.TimeoutError:
             return await ctx.send("You took too long. Try again, please.")
-        await ctx.author.send("How old are you?")
+        await ctx.author.send("How far did you get in last seasons gym challenege")
         try:
             age = await self.bot.wait_for("message", timeout=120, check=check)
         except asyncio.TimeoutError:
@@ -104,19 +104,19 @@ class Application(commands.Cog):
             days = await self.bot.wait_for("message", timeout=120, check=check)
         except asyncio.TimeoutError:
             return await ctx.send("You took too long. Try again, please.")
-        await ctx.author.send("How many hours per day can you be active?")
+        await ctx.author.send("Can you respond within 24h to challenge pings?")
         try:
-            hours = await self.bot.wait_for("message", timeout=120, check=check)
+            hours = await self.bot.wait_for("message", timeout=200, check=check)
         except asyncio.TimeoutError:
             return await ctx.send("You took too long. Try again, please.")
         await ctx.author.send(
-            "Do you have any previous experience? If so, please describe."
+            "Please provide the names/total IV of the team your planning to use for gyms\nPikachu|85%\nRaichu|92%\nand so on."
         )
         try:
             experience = await self.bot.wait_for("message", timeout=120, check=check)
         except asyncio.TimeoutError:
             return await ctx.send("You took too long. Try again, please.")
-        await ctx.author.send("Why do you want to be a member of our staff?")
+        await ctx.author.send("Type I agree here to agree you've read over the rules, and understand the requirements as well as you understand that you will need to provide screenshots of the pokes mentioned above")
         try:
             reason = await self.bot.wait_for("message", timeout=120, check=check)
         except asyncio.TimeoutError:
@@ -129,14 +129,14 @@ class Application(commands.Cog):
         embed.title = (
             f"User: {ctx.author.name}#{ctx.author.discriminator} ({ctx.author.id})"
         )
-        embed.add_field(name="Name:", value=name.content, inline=True)
-        embed.add_field(name="Age:", value=age.content, inline=True)
+        embed.add_field(name="Gym Applied For:", value=name.content, inline=True)
+        embed.add_field(name="Progress last season:", value=age.content, inline=True)
         embed.add_field(name="Timezone:", value=timezone.content, inline=True)
-        embed.add_field(name="Desired position:", value=position.content, inline=True)
-        embed.add_field(name="Active days/week:", value=days.content, inline=True)
-        embed.add_field(name="Active hours/day:", value=hours.content, inline=True)
+        embed.add_field(name="Activity", value=position.content, inline=True)
+        embed.add_field(name="Can respond within 24h of ping:", value=days.content, inline=True)
+        embed.add_field(name="Gym Team to be used:", value=hours.content, inline=True)
         embed.add_field(
-            name="Previous experience:", value=experience.content, inline=False
+            name="Agreement:", value=experience.content, inline=False
         )
         embed.add_field(name="Reason:", value=reason.content, inline=False)
 
